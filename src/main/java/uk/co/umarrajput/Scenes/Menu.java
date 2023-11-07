@@ -22,8 +22,12 @@ public class Menu extends Scene {
         
         buttonManager = new ButtonManager();
 
-        uk.co.umarrajput.GUI.Button playButton = new TextButton("Play", (screenWidth/2) - 100 - 15, 300, 100, 50, Color.blue, Color.green);
-        uk.co.umarrajput.GUI.Button quitButton = new TextButton("Quit", (screenWidth/2) + 15, 300, 100, 50, Color.pink, Color.green);
+        TextButton playButton = new TextButton("Play", (screenWidth/2) - 100 - 15, 300, 100, 50, Color.white, Color.darkGray);
+        playButton.setTextColor(Color.black);
+
+        TextButton quitButton = new TextButton("Quit", (screenWidth/2) + 15, 300, 100, 50, Color.white, Color.darkGray);
+        quitButton.setTextColor(Color.black);
+
 
         buttonManager.add(playButton);
         buttonManager.add(quitButton);
@@ -51,6 +55,10 @@ public class Menu extends Scene {
         for (Button b : buttonManager.getButtons()) {
             b.draw(g, screenWidth, screenHeight);
         }
+
+        g.setColor(Color.white);
+        g.setFont(new Font("Arial", Font.PLAIN, 12));
+        g.drawString(getSceneManager().getVersionNumber(), 10, screenHeight-10);
     }
 
     @Override
@@ -62,5 +70,10 @@ public class Menu extends Scene {
         } else if (buttonManager.isButtonClicked(e, 1)) {
             System.exit(0);
         }
+    }
+
+    @Override
+    public void keyDown(int e) {
+        super.keyDown(e);
     }
 }

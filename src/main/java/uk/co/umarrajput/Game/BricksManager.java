@@ -14,11 +14,11 @@ public class BricksManager implements Drawable {
         this.game = game;
 
         bricks = new ArrayList<>();
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 10; x++) {
+        for (int y = 0; y < 7; y++) {
+            for (int x = 0; x < 12; x++) {
                 int width = 50;
                 int height = 30;
-                add(new Brick(x*width, y*height, width, height));
+                add(new Brick(x*width, y*height, width, height, Math.max(6 - y, 0)));
             }
         }
     }
@@ -53,5 +53,11 @@ public class BricksManager implements Drawable {
 
     public void setBricks(ArrayList<Brick> bricks) {
         this.bricks = bricks;
+    }
+
+    public void dammage(int index, int ammount) {
+        if (bricks.get(index).dammage(ammount) <= 0) {
+            remove(index);
+        }
     }
 }

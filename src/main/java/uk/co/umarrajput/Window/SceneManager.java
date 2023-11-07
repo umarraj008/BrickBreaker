@@ -1,9 +1,6 @@
 package uk.co.umarrajput.Window;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
@@ -11,12 +8,12 @@ public class SceneManager implements Drawable{
     private int scene;
     private int screenWidth, screenHeight;
     private ArrayList<Scene> scenes;
-    private JPanel jPanel;
+    private GamePanel gamePanel;
 
-    public SceneManager(int screenWidth, int screenHeight, JPanel jPanel) {
+    public SceneManager(int screenWidth, int screenHeight, GamePanel gamePanel) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        this.jPanel = jPanel;
+        this.gamePanel = gamePanel;
 
         scene = 0;
         scenes = new ArrayList<>();
@@ -60,4 +57,19 @@ public class SceneManager implements Drawable{
     }
 
 
+    public int getCurrentSceneIndex() {
+        return scene;
+    }
+
+    public Scene getSceneAt(int index) {
+        return scenes.get(index);
+    }
+
+    public boolean getDebugMode() {
+        return gamePanel.getDebugMode();
+    }
+
+    public String getVersionNumber() {
+        return gamePanel.getVersionNumber();
+    }
 }

@@ -1,7 +1,9 @@
 package uk.co.umarrajput.Game;
 
+import uk.co.umarrajput.Scenes.Game;
 import uk.co.umarrajput.Window.Drawable;
 import uk.co.umarrajput.Window.Logger;
+import uk.co.umarrajput.Window.Scene;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,11 +17,12 @@ public class Ball implements Drawable {
     private double yVEl;
     private int screenWidth;
     private int screenHeight;
+    private Game game;
     private Paddle paddle;
     private BricksManager bricksManager;
-    private double increaseFactor = 0.5;
+    private double increaseFactor = 0.1;
 
-    public Ball(int x, int y, int width, int screenWidth, int screenHeight, Paddle paddle, BricksManager bricksManager) {
+    public Ball(int x, int y, int width, int screenWidth, int screenHeight, Game game) {
         this.x = x;
         this.y = y;
         this.color = Color.white;
@@ -28,14 +31,27 @@ public class Ball implements Drawable {
         this.screenHeight = screenHeight;
         this.xVEl = 5;
         this.yVEl = -5;
-        this.paddle = paddle;
-        this.bricksManager = bricksManager;
+        this.game = game;
+        this.paddle = game.getPaddle();
+        this.bricksManager = game.getBricksManager();
     }
 
     @Override
     public void draw(Graphics g, int screenWidth, int screenHeight) {
         g.setColor(color);
         g.drawOval(x, y, width, width);
+
+        if (game.getDebugMode()) {
+            g.setColor(Color.red);
+            g.drawRect(x,y,width, width);
+
+            g.setColor(Color.white);
+            g.setFont(new Font("Arial", Font.PLAIN, 12));
+            g.drawString("X: " + x, x + width + 10,       y - width);
+            g.drawString("Y: " + y, x + width + 10,       y - width + 10);
+            g.drawString("xVel: " + xVEl, x + width + 10, y - width + 20);
+            g.drawString("yVel: " + yVEl, x + width + 10, y - width + 30);
+        }
     }
 
     @Override
@@ -60,15 +76,16 @@ public class Ball implements Drawable {
             yVEl = -yVEl;
         }
 
-        if (y + width >= screenWidth) {
-            y = screenHeight - width;
-            yVEl = -yVEl;
+        if (y + width >= screenHeight) {
+//            y = screenHeight - width;
+//            yVEl = -yVEl;
+            game.youLose();
         }
 
         // Paddle Collision
 //        if (x + width >= paddle.getX() && x <= paddle.getX() + paddle.getWidth() && y + width >= paddle.getY() && y <= paddle.getY() + paddle.getHeight()) {
 //        }
-        if (y + width >= paddle.getY()) {
+        if (y + width >= paddle.getY() && x + width >= paddle.getX() && x <= paddle.getX() + paddle.getWidth()) {
             y = paddle.getY() - width;
             yVEl = -yVEl;
 
@@ -85,25 +102,36 @@ public class Ball implements Drawable {
         ArrayList<Brick> bricks = bricksManager.getBricks();
         for (int i = 0; i < bricks.size(); i++) {
             if (x + width >= bricks.get(i).getX() && x <= bricks.get(i).getX() + bricks.get(i).getWidth() && y + width >= bricks.get(i).getY() && y <= bricks.get(i).getY() + bricks.get(i).getHeight()) {
-                if (x + width >= bricks.get(i).getX()) {
-//                    x = bricks.get(i).getX() - width;
+//                if (x + width >= bricks.get(i).getX()) {
+////                    x = bricks.get(i).getX() - width;
+//                    xVEl = -xVEl;
+//                    Logger.log("col1", "BrickCollision");
+//                } else if (x <= bricks.get(i).getX() + bricks.get(i).getWidth()) {
+////                    x = bricks.get(i).getX() + bricks.get(i).getWidth();
+//                    xVEl = -xVEl;
+//                    Logger.log("col2", "BrickCollision");
+//                }
+//                if (y + width >= bricks.get(i).getY()) {
+////                    y = bricks.get(i).getY();
+//                    yVEl = -yVEl;
+//                    Logger.log("col3", "BrickCollision");
+//                } else if (y <= bricks.get(i).getY() + bricks.get(i).getHeight()) {
+////                    y = bricks.get(i).getY() + bricks.get(i).getHeight();
+//                    yVEl = -yVEl;
+//                    Logger.log("col4", "BrickCollision");
+//                }
+//                if (x + width >= bricks.get(i).getX() && x <= bricks.get(i).getX() + bricks.get(i).getWidth()) {
+////                    x = bricks.get(i).getX() - width;
+//                    xVEl = -xVEl;
+//                    Logger.log("col1", "BrickCollision");
+//                }
+//                if (y + width >= bricks.get(i).getY() && y <= bricks.get(i).getY() + bricks.get(i).getHeight()) {
+////                    y = bricks.get(i).getY();
+//                    Logger.log("col3", "BrickCollision");
+//                }
                     xVEl = -xVEl;
-                    Logger.log("col1", "BrickCollision");
-                } else if (x <= bricks.get(i).getX() + bricks.get(i).getWidth()) {
-//                    x = bricks.get(i).getX() + bricks.get(i).getWidth();
-                    xVEl = -xVEl;
-                    Logger.log("col2", "BrickCollision");
-                }
-                if (y + width >= bricks.get(i).getY()) {
-//                    y = bricks.get(i).getY();
                     yVEl = -yVEl;
-                    Logger.log("col3", "BrickCollision");
-                } else if (y <= bricks.get(i).getY() + bricks.get(i).getHeight()) {
-//                    y = bricks.get(i).getY() + bricks.get(i).getHeight();
-                    yVEl = -yVEl;
-                    Logger.log("col4", "BrickCollision");
-                }
-                bricksManager.remove(i);
+                bricksManager.dammage(i, 1);
                 break;
             }
         }
