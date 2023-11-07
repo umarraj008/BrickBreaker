@@ -23,9 +23,9 @@ public class Game extends Scene {
     public Game(SceneManager sceneManager, int screenWidth, int screenHeight) {
         super(sceneManager, screenWidth, screenHeight);
 
-        bricksManager = new BricksManager(this);
-        paddle = new Paddle(screenWidth/2, screenHeight-50, 200, screenWidth);
-        ball = new Ball(screenWidth/2 - 10, screenHeight-50-20, 20, screenWidth, screenHeight, paddle, bricksManager);
+        this.bricksManager = new BricksManager(this);
+        this.paddle = new Paddle(screenWidth/2, screenHeight-50, 200, screenWidth);
+        this.ball = new Ball(screenWidth/2 - 10, screenHeight-50-20, 20, screenWidth, screenHeight, this);
     }
 
     public void draw(Graphics g, int screenWidth, int screenHeight) {
@@ -39,7 +39,10 @@ public class Game extends Scene {
         paddle.update(mouseX, mouseY, deltaTime);
         bricksManager.update(mouseX, mouseY, deltaTime);
 
-        paddle.setX((ball.getX() + ball.getWidth()/2) - (paddle.getWidth()/2));
+        // To make paddle follow ball
+        if (getSceneManager().getDebugMode()) {
+            paddle.setX((ball.getX() + ball.getWidth()/2) - (paddle.getWidth()/2));
+        }
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -82,7 +85,23 @@ public class Game extends Scene {
         }
     }
 
+    public Paddle getPaddle() {
+        return this.paddle;
+    }
+
+    public BricksManager getBricksManager() {
+        return this.bricksManager;
+    }
+
     public void youWin() {
         getSceneManager().changeScene(2);
+    }
+
+    public void youLose() {
+        getSceneManager().changeScene(3);
+    }
+
+    public boolean getDebugMode() {
+        return getSceneManager().getDebugMode();
     }
 }
